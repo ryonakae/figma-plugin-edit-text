@@ -1,1 +1,1 @@
-# figma-plugin-edit-text
+# EditText Figma Plugin
