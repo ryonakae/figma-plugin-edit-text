@@ -1,4 +1,12 @@
-type MessageType = 'resize'
+type MessageType =
+  | 'resize'
+  | 'getoptions'
+  | 'getoptionssuccess'
+  | 'setoptions'
+  | 'setoptionssuccess'
+  | 'settext'
+  | 'settextsuccess'
+  | 'settextfailed'
 
 type FigmaComponent = {
   name: string

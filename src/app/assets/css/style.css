@@ -18,3 +18,7 @@ body {
   text-decoration: none;
   cursor: default;
 }
+
+textarea {
+  border: 1px solid black;
+}

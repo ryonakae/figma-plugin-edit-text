@@ -1,22 +1,25 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import '@/app/assets/css/style.css'
 import Store from '@/app/Store'
-
-const Content: React.FC = () => {
-  const { isSendTextAtCmdAndEnter, setIsSendTextAtCmdAndEnter } = Store.useContainer()
-
-  return (
-    <>
-      <div>Edit Text</div>
-      <div>isSendTextAtCmdAndEnter {`${isSendTextAtCmdAndEnter}`}</div>
-    </>
-  )
-}
+import TextArea from '@/app/components/TextArea'
+import Options from '@/app/components/Options'
 
 const App: React.FC = () => {
+  useEffect(() => {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'getoptions'
+        }
+      } as Message,
+      '*'
+    )
+  }, [])
+
   return (
     <Store.Provider>
-      <Content />
+      <TextArea />
+      {/* <Options /> */}
     </Store.Provider>
   )
 }
