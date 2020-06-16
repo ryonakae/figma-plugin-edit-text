@@ -77,6 +77,16 @@ class Controller {
       } as PluginMessage)
     }
   }
+
+  onSelectionChange(): void {
+    const selections = figma.currentPage.selection
+    console.log('onSelectionChange', selections)
+
+    if (selections && selections.length === 1 && selections[0].type === 'TEXT') {
+      const textNode = selections[0]
+      console.log('select only one text node', textNode)
+    }
+  }
 }
 
 const contoller = new Controller()
@@ -107,6 +117,4 @@ figma.ui.onmessage = async (msg: PluginMessage): Promise<void> => {
   }
 }
 
-figma.on('selectionchange', () => {
-  console.log('selection changed', figma.currentPage.selection)
-})
+figma.on('selectionchange', contoller.onSelectionChange)
