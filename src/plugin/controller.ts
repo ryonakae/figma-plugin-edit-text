@@ -26,3 +26,7 @@ figma.showUI(__html__, { width: UI_WIDTH, height: UI_MIN_HEIGHT })
 figma.ui.onmessage = async (msg: PluginMessage): Promise<void> => {
   console.log(msg)
 }
+
+figma.on('selectionchange', () => {
+  console.log('selection changed', figma.currentPage.selection)
+})
