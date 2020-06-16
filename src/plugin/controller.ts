@@ -25,6 +25,14 @@ figma.showUI(__html__, { width: UI_WIDTH, height: UI_MIN_HEIGHT })
 
 figma.ui.onmessage = async (msg: PluginMessage): Promise<void> => {
   console.log(msg)
+
+  switch (msg.type) {
+    case 'resize':
+      contoller.resizeUI(msg.data.height)
+      break
+    default:
+      break
+  }
 }
 
 figma.on('selectionchange', () => {

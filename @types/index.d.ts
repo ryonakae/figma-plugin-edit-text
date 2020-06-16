@@ -1,22 +1,4 @@
-type MessageType =
-  | 'save'
-  | 'clear'
-  | 'update'
-  | 'get'
-  | 'createinstance'
-  | 'resize'
-  | 'getoptions'
-  | 'setoptions'
-  | 'savesuccess'
-  | 'clearsuccess'
-  | 'getsuccess'
-  | 'createinstancesuccess'
-  | 'getoptionssuccess'
-  | 'setoptionssuccess'
-  | 'savefailed'
-  | 'clearfailed'
-  | 'getfailed'
-  | 'createinstancefailed'
+type MessageType = 'resize'
 
 type FigmaComponent = {
   name: string
