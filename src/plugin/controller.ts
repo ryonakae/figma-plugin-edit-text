@@ -30,7 +30,10 @@ class Controller {
       selections.map(async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
-          await figma.loadFontAsync(selection.getRangeFontName(0, 1) as FontName)
+          const selectionRange = selection.characters.length
+          for (let i = 0; i < selectionRange; i++) {
+            await figma.loadFontAsync(selection.getRangeFontName(i, i + 1) as FontName)
+          }
           selection.characters = text
         }
       })
