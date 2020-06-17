@@ -12,7 +12,8 @@ function Store() {
   const [selections, setSelections] = useState<SceneNode[]>([])
 
   function sendTextToFigma(text: string): void {
-    setInputText(text)
+    console.log('sendTextToFigma', text)
+    // setInputText(text)
     parent.postMessage(
       {
         pluginMessage: {

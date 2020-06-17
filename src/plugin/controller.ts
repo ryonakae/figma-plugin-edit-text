@@ -31,10 +31,6 @@ class Controller {
       _.map(selections, async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
-          const selectionRange = selection.characters.length
-          for (let i = 0; i < selectionRange; i++) {
-            await figma.loadFontAsync(selection.getRangeFontName(i, i + 1) as FontName)
-          }
           selection.characters = text
         }
       })
@@ -52,8 +48,17 @@ class Controller {
 
     const _selections: string[] = []
     if (selections.length > 0) {
-      _.map(selections, selection => {
+      _.map(selections, async selection => {
         _selections.push(selection.id)
+
+        // テキストの場合、フォントをロードする
+        if (selection.type === 'TEXT') {
+          const selectionRange = selection.characters.length
+          for (let i = 0; i < selectionRange; i++) {
+            await figma.loadFontAsync(selection.getRangeFontName(i, i + 1) as FontName)
+          }
+          console.log(`${selection.id} font loaded`)
+        }
       })
     }
     figma.ui.postMessage({

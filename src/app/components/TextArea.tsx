@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import Store from '@/app/Store'
 
@@ -7,16 +8,27 @@ const TextArea: React.FC = () => {
     inputTextSelectionRange,
     isTextAreaDisabled,
     selections,
+    setInputText,
     sendTextToFigma
   } = Store.useContainer()
   const textAreaRef = useRef(null)
+  const onChangeTimer = useRef(0)
   const selectionTimer = useRef(0)
   const selectionRangeTimer = useRef(0)
-  const TIMER_LENGTH = 500
+  const ONCHANGE_TIMER_DURATION = 100
+  const SELECTION_TIMER_DURATION = 500
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     console.log('textarea onChange')
-    sendTextToFigma(event.target.value)
+
+    window.clearInterval(onChangeTimer.current)
+
+    event.persist()
+    setInputText(event.target.value)
+
+    onChangeTimer.current = window.setTimeout(() => {
+      sendTextToFigma(event.target.value)
+    }, ONCHANGE_TIMER_DURATION)
   }
 
   function focusToTextArea(): void {
@@ -31,7 +43,7 @@ const TextArea: React.FC = () => {
       if (selections.length > 0) {
         focusToTextArea()
       }
-    }, TIMER_LENGTH)
+    }, SELECTION_TIMER_DURATION)
   }
 
   function onSelectionRangeChange(): void {
@@ -40,7 +52,7 @@ const TextArea: React.FC = () => {
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
     textArea.setSelectionRange(inputTextSelectionRange.start, inputTextSelectionRange.end)
 
-    selectionRangeTimer.current = window.setTimeout(focusToTextArea, TIMER_LENGTH)
+    selectionRangeTimer.current = window.setTimeout(focusToTextArea, SELECTION_TIMER_DURATION)
   }
 
   useEffect(() => {
