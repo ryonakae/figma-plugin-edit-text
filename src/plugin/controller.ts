@@ -63,10 +63,7 @@ class Controller {
       _.map(selections, async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
-          const characterLength = selection.characters.length
-          for (let i = 0; i < characterLength; i++) {
-            await figma.loadFontAsync(selection.getRangeFontName(i, i + 1) as FontName)
-          }
+          await figma.loadFontAsync(selection.getRangeFontName(0, 1) as FontName)
           selection.characters = text
         }
       })
@@ -85,6 +82,19 @@ class Controller {
     if (selections && selections.length === 1 && selections[0].type === 'TEXT') {
       const textNode = selections[0]
       console.log('select only one text node', textNode)
+      figma.ui.postMessage({
+        type: 'copytext',
+        data: {
+          text: textNode.characters
+        }
+      } as PluginMessage)
+    } else {
+      figma.ui.postMessage({
+        type: 'copytext',
+        data: {
+          text: ''
+        }
+      } as PluginMessage)
     }
   }
 }

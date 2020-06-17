@@ -4,15 +4,35 @@ import { createContainer } from 'unstated-next'
 function Store() {
   const [isSendTextAtCmdAndEnter, setIsSendTextAtCmdAndEnter] = useState<boolean>(true)
   const [isSetSelectionText, setIsSetSelectionText] = useState<boolean>(true)
+  const [inputText, setInputText] = useState<string>('')
+
+  function sendTextToFigma(text: string): void {
+    setInputText(text)
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'settext',
+          data: {
+            text: text
+          }
+        }
+      } as Message,
+      '*'
+    )
+  }
 
   function listenPluginMessage(): void {
     onmessage = (msg): void => {
       const messageType: MessageType = msg.data.pluginMessage.type
+      const pluginData: PluginMessage['data'] = msg.data.pluginMessage.data
 
       switch (messageType) {
         case 'getoptionssuccess':
-          setIsSendTextAtCmdAndEnter(msg.data.pluginMessage.data.isSendTextAtCmdAndEnter)
-          setIsSetSelectionText(msg.data.pluginMessage.data.isSetSelectionText)
+          setIsSendTextAtCmdAndEnter(pluginData.isSendTextAtCmdAndEnter)
+          setIsSetSelectionText(pluginData.isSetSelectionText)
+          break
+        case 'copytext':
+          setInputText(pluginData.text)
           break
         default:
           break
@@ -27,8 +47,11 @@ function Store() {
   return {
     isSendTextAtCmdAndEnter,
     isSetSelectionText,
+    inputText,
     setIsSendTextAtCmdAndEnter,
-    setIsSetSelectionText
+    setIsSetSelectionText,
+    setInputText,
+    sendTextToFigma
   }
 }
 

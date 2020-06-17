@@ -2,54 +2,30 @@ import React, { useEffect, useState } from 'react'
 import Store from '@/app/Store'
 
 const TextArea: React.FC = () => {
-  const [text, setText] = useState<string>('')
+  const { inputText, sendTextToFigma } = Store.useContainer()
   const [isInitialEdit, setIsInitialEdit] = useState<boolean>(true)
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     console.log('textarea onChange')
-    setText(event.target.value)
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'settext',
-          data: {
-            text: text
-          }
-        }
-      } as Message,
-      '*'
-    )
+    sendTextToFigma(event.target.value)
   }
 
   function onSendClick(): void {
-    console.log('textarea onSendClick', text)
-    setText('')
+    console.log('textarea onSendClick', inputText)
+    sendTextToFigma(inputText)
   }
-
-  useEffect(() => {
-    console.log('useEffect', text)
-    if (!isInitialEdit) {
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'settext',
-            data: {
-              text: text
-            }
-          }
-        } as Message,
-        '*'
-      )
-    }
-
-    if (isInitialEdit) {
-      setIsInitialEdit(false)
-    }
-  }, [text])
 
   return (
     <div>
-      <textarea name="" id="" cols={30} rows={10} value={text} onChange={onChange} />
+      <textarea
+        name=""
+        id=""
+        cols={30}
+        rows={10}
+        value={inputText}
+        onChange={onChange}
+        placeholder="Enter Text Here..."
+      />
       <div className="button" onClick={onSendClick}>
         send
       </div>
