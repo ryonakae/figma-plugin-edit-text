@@ -9,6 +9,7 @@ function Store() {
     end: 0
   })
   const [isTextAreaDisabled, setIsTextAreaDisabled] = useState<boolean>(true)
+  const [selections, setSelections] = useState<SceneNode[]>([])
 
   function sendTextToFigma(text: string): void {
     setInputText(text)
@@ -31,6 +32,9 @@ function Store() {
       const pluginData: PluginMessage['data'] = msg.data.pluginMessage.data
 
       switch (messageType) {
+        case 'selectionchange':
+          setSelections(pluginData.selections)
+          break
         case 'copytext':
           if (pluginData.isTextAreaDisabled) {
             setIsTextAreaDisabled(true)
@@ -64,9 +68,11 @@ function Store() {
     inputText,
     inputTextSelectionRange,
     isTextAreaDisabled,
+    selections,
     setInputText,
     setInputTextSelectionRange,
     setIsTextAreaDisabled,
+    setSelections,
     sendTextToFigma
   }
 }

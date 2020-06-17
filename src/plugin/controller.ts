@@ -1,9 +1,8 @@
-import _ from 'lodash'
 import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
 const UI_WIDTH = 250
-const UI_MIN_HEIGHT = 300
+const UI_MIN_HEIGHT = 250
 const UI_MAX_HEIGHT = 450
 
 class Controller {
@@ -28,7 +27,7 @@ class Controller {
     if (selections.length === 0) {
       console.log('nothing selection')
     } else {
-      _.map(selections, async selection => {
+      selections.map(async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
           await figma.loadFontAsync(selection.getRangeFontName(0, 1) as FontName)
@@ -46,6 +45,19 @@ class Controller {
   onSelectionChange(): void {
     const selections = figma.currentPage.selection
     console.log('onSelectionChange', selections)
+
+    const _selections: string[] = []
+    if (selections.length > 0) {
+      selections.map(selection => {
+        _selections.push(selection.id)
+      })
+    }
+    figma.ui.postMessage({
+      type: 'selectionchange',
+      data: {
+        selections: _selections
+      }
+    } as PluginMessage)
 
     // 一つ以上選択しているとき
     if (selections.length > 0) {
