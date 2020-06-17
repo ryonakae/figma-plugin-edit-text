@@ -2,7 +2,12 @@ import React, { useEffect, useState, useRef } from 'react'
 import Store from '@/app/Store'
 
 const TextArea: React.FC = () => {
-  const { inputText, inputTextSelectionRange, sendTextToFigma } = Store.useContainer()
+  const {
+    inputText,
+    inputTextSelectionRange,
+    isTextAreaDisabled,
+    sendTextToFigma
+  } = Store.useContainer()
   const textAreaRef = useRef(null)
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
@@ -17,6 +22,7 @@ const TextArea: React.FC = () => {
 
   function setSelectionRange(): void {
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
+    textArea.focus()
     textArea.setSelectionRange(inputTextSelectionRange.start, inputTextSelectionRange.end)
   }
 
@@ -25,24 +31,26 @@ const TextArea: React.FC = () => {
   }, [])
 
   useEffect(() => {
+    if (!isTextAreaDisabled) {
+      focusToTextArea()
+    }
+  }, [isTextAreaDisabled])
+
+  useEffect(() => {
     console.log('inputTextSelectionRange changed', inputTextSelectionRange)
     setSelectionRange()
   }, [inputTextSelectionRange])
 
   return (
-    <div>
-      <textarea
-        name=""
-        id=""
-        cols={30}
-        rows={10}
-        value={inputText}
-        onChange={onChange}
-        onBlur={focusToTextArea}
-        placeholder="Enter Text Here..."
-        ref={textAreaRef}
-      />
-    </div>
+    <textarea
+      className="textarea"
+      disabled={isTextAreaDisabled}
+      value={inputText}
+      onChange={onChange}
+      onBlur={focusToTextArea}
+      placeholder={isTextAreaDisabled ? 'Select text layer(s)' : 'Type text here'}
+      ref={textAreaRef}
+    />
   )
 }
 

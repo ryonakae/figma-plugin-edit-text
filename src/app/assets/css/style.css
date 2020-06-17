@@ -19,6 +19,36 @@ body {
   cursor: default;
 }
 
-textarea {
-  border: 1px solid black;
+#plugin {
+  width: 100vw;
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-default) var(--spacing-default) var(--spacing-list);
+}
+
+.textarea {
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-text);
+  font-size: var(--fontSize-textArea);
+  line-height: var(--lineHeight-textArea);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-default);
+
+  &::placeholder {
+    color: var(--color-text-sub);
+  }
+
+  &:disabled {
+    background-color: var(--color-disabled);
+  }
+}
+
+.note {
+  margin-top: var(--spacing-list);
 }

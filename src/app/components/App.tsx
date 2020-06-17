@@ -36,8 +36,12 @@ const App: React.FC = () => {
 
   return (
     <Store.Provider>
-      <div>
+      <div className="app">
         <TextArea />
+        <div className="note">
+          <div>Select text layer(s) and type in textarea.</div>
+          <div>Press Esc or Cmd + Enter to close plugin.</div>
+        </div>
       </div>
     </Store.Provider>
   )

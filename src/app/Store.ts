@@ -8,6 +8,7 @@ function Store() {
     start: 0,
     end: 0
   })
+  const [isTextAreaDisabled, setIsTextAreaDisabled] = useState<boolean>(true)
 
   function sendTextToFigma(text: string): void {
     setInputText(text)
@@ -31,7 +32,15 @@ function Store() {
 
       switch (messageType) {
         case 'copytext':
-          if (pluginData.selectedTextRange) {
+          if (pluginData.isTextAreaDisabled) {
+            setIsTextAreaDisabled(true)
+          } else {
+            setIsTextAreaDisabled(false)
+          }
+
+          if (pluginData.text.length === 0) {
+            setInputText(pluginData.text)
+          } else if (pluginData.selectedTextRange) {
             setInputText(pluginData.text)
             setInputTextSelectionRange({
               start: pluginData.selectedTextRange.start,
@@ -54,8 +63,10 @@ function Store() {
   return {
     inputText,
     inputTextSelectionRange,
+    isTextAreaDisabled,
     setInputText,
     setInputTextSelectionRange,
+    setIsTextAreaDisabled,
     sendTextToFigma
   }
 }

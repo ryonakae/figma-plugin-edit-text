@@ -2,6 +2,6 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import App from '@/app/components/App'
 
-const app = document.getElementById('app') as HTMLElement
+const plugin = document.getElementById('plugin') as HTMLElement
 
-ReactDOM.render(<App />, app)
+ReactDOM.render(<App />, plugin)

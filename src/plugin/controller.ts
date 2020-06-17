@@ -47,40 +47,70 @@ class Controller {
     const selections = figma.currentPage.selection
     console.log('onSelectionChange', selections)
 
-    if (selections && selections.length === 1 && selections[0].type === 'TEXT') {
-      const textNode = selections[0]
-      console.log('select only one text node', textNode)
+    // 一つ以上選択しているとき
+    if (selections.length > 0) {
+      // 一つだけ選択しているとき
+      if (selections.length === 1) {
+        // それがテキストのとき
+        if (selections[0].type === 'TEXT') {
+          const textNode = selections[0]
+          console.log('select only one text node', textNode)
 
-      const selectedTextRange = figma.currentPage.selectedTextRange
-      if (
-        selectedTextRange &&
-        (selectedTextRange.start !== selectedTextRange.end ||
-          textNode.characters.length !== selectedTextRange.end)
-      ) {
-        console.log('part of text are selected', selectedTextRange)
-        figma.ui.postMessage({
-          type: 'copytext',
-          data: {
-            text: textNode.characters,
-            selectedTextRange: {
-              start: selectedTextRange.start,
-              end: selectedTextRange.end
-            }
+          const selectedTextRange = figma.currentPage.selectedTextRange
+          if (
+            selectedTextRange &&
+            (selectedTextRange.start !== selectedTextRange.end ||
+              textNode.characters.length !== selectedTextRange.end)
+          ) {
+            console.log('part of text are selected', selectedTextRange)
+            figma.ui.postMessage({
+              type: 'copytext',
+              data: {
+                text: textNode.characters,
+                selectedTextRange: {
+                  start: selectedTextRange.start,
+                  end: selectedTextRange.end
+                }
+              }
+            } as PluginMessage)
+          } else {
+            figma.ui.postMessage({
+              type: 'copytext',
+              data: {
+                text: textNode.characters
+              }
+            } as PluginMessage)
           }
-        } as PluginMessage)
-      } else {
+        }
+        // テキスト以外の場合のとき
+        else {
+          figma.ui.postMessage({
+            type: 'copytext',
+            data: {
+              text: '',
+              isTextAreaDisabled: true
+            }
+          } as PluginMessage)
+        }
+      }
+      // 一つ以上選択しているとき
+      else {
         figma.ui.postMessage({
           type: 'copytext',
           data: {
-            text: textNode.characters
+            text: ''
           }
         } as PluginMessage)
       }
-    } else {
+    }
+    // なにも選択していないとき
+    else {
+      console.log('no selection')
       figma.ui.postMessage({
         type: 'copytext',
         data: {
-          text: ''
+          text: '',
+          isTextAreaDisabled: true
         }
       } as PluginMessage)
     }
