@@ -10,19 +10,6 @@ const TextArea: React.FC = () => {
     sendTextToFigma(event.target.value)
   }
 
-  function onSendClick(): void {
-    console.log('textarea onSendClick', inputText)
-    sendTextToFigma(inputText)
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'closeplugin'
-        }
-      } as Message,
-      '*'
-    )
-  }
-
   function focusToTextArea(): void {
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
     textArea.focus()
@@ -55,9 +42,6 @@ const TextArea: React.FC = () => {
         placeholder="Enter Text Here..."
         ref={textAreaRef}
       />
-      <div className="button" onClick={onSendClick}>
-        send
-      </div>
     </div>
   )
 }

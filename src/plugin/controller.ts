@@ -7,38 +7,6 @@ const UI_MIN_HEIGHT = 300
 const UI_MAX_HEIGHT = 450
 
 class Controller {
-  getOptions(): void {
-    const isSendTextAtCmdAndEnter = Util.toBoolean(
-      figma.root.getPluginData('isSendTextAtCmdAndEnter')
-    )
-    const isSetSelectionText = Util.toBoolean(figma.root.getPluginData('isSetSelectionText'))
-
-    figma.ui.postMessage({
-      type: 'getoptionssuccess',
-      data: {
-        isSendTextAtCmdAndEnter,
-        isSetSelectionText
-      }
-    } as PluginMessage)
-
-    console.log('getOptions success', isSendTextAtCmdAndEnter, isSetSelectionText)
-  }
-
-  setOptions(options: { isSendTextAtCmdAndEnter: boolean; isSetSelectionText: boolean }): void {
-    figma.root.setPluginData('isSendTextAtCmdAndEnter', String(options.isSendTextAtCmdAndEnter))
-    figma.root.setPluginData('isSetSelectionText', String(options.isSetSelectionText))
-
-    figma.ui.postMessage({
-      type: 'setoptionssuccess'
-    } as PluginMessage)
-
-    console.log(
-      'setOptions success',
-      figma.root.getPluginData('isSendTextAtCmdAndEnter'),
-      figma.root.getPluginData('isSetSelectionText')
-    )
-  }
-
   resizeUI(height: number): void {
     let _height = height
     if (height < UI_MIN_HEIGHT) {
@@ -138,15 +106,6 @@ function bootstrap(): void {
     switch (msg.type) {
       case 'resize':
         contoller.resizeUI(msg.data.height)
-        break
-      case 'getoptions':
-        contoller.getOptions()
-        break
-      case 'setoptions':
-        contoller.setOptions({
-          isSendTextAtCmdAndEnter: msg.data.isSendTextAtCmdAndEnter,
-          isSetSelectionText: msg.data.isSetSelectionText
-        })
         break
       case 'settext':
         contoller.setText(msg.data.text)

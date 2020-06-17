@@ -3,8 +3,6 @@ import { createContainer } from 'unstated-next'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Store() {
-  const [isSendTextAtCmdAndEnter, setIsSendTextAtCmdAndEnter] = useState(true)
-  const [isSetSelectionText, setIsSetSelectionText] = useState(true)
   const [inputText, setInputText] = useState('')
   const [inputTextSelectionRange, setInputTextSelectionRange] = useState({
     start: 0,
@@ -32,10 +30,6 @@ function Store() {
       const pluginData: PluginMessage['data'] = msg.data.pluginMessage.data
 
       switch (messageType) {
-        case 'getoptionssuccess':
-          setIsSendTextAtCmdAndEnter(pluginData.isSendTextAtCmdAndEnter)
-          setIsSetSelectionText(pluginData.isSetSelectionText)
-          break
         case 'copytext':
           if (pluginData.selectedTextRange) {
             setInputText(pluginData.text)
@@ -58,12 +52,8 @@ function Store() {
   }, [])
 
   return {
-    isSendTextAtCmdAndEnter,
-    isSetSelectionText,
     inputText,
     inputTextSelectionRange,
-    setIsSendTextAtCmdAndEnter,
-    setIsSetSelectionText,
     setInputText,
     setInputTextSelectionRange,
     sendTextToFigma

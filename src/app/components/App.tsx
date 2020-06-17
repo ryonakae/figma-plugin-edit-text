@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import '@/app/assets/css/style.css'
 import Store from '@/app/Store'
 import TextArea from '@/app/components/TextArea'
-import Options from '@/app/components/Options'
 
 const App: React.FC = () => {
   function onKeyUp(event: KeyboardEvent): void {
@@ -36,7 +35,6 @@ const App: React.FC = () => {
     <Store.Provider>
       <div>
         <TextArea />
-        <Options />
       </div>
     </Store.Provider>
   )
