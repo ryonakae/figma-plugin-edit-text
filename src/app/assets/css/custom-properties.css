@@ -14,6 +14,7 @@
   --color-text-sub: #b3b3b3;
   --color-border: rgba(0, 0, 0, 0.1);
   --color-disabled: #fafafa;
+  --color-active: #18a0fb;
 
   /* radius */
   --radius-default: 2px;
