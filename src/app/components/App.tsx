@@ -5,6 +5,20 @@ import TextArea from '@/app/components/TextArea'
 import Options from '@/app/components/Options'
 
 const App: React.FC = () => {
+  function onKeyUp(event: KeyboardEvent): void {
+    // esc
+    if (event.keyCode === 27) {
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'closeplugin'
+          }
+        } as Message,
+        '*'
+      )
+    }
+  }
+
   useEffect(() => {
     parent.postMessage(
       {
@@ -14,12 +28,16 @@ const App: React.FC = () => {
       } as Message,
       '*'
     )
+
+    document.addEventListener('keyup', onKeyUp)
   }, [])
 
   return (
     <Store.Provider>
-      <TextArea />
-      {/* <Options /> */}
+      <div>
+        <TextArea />
+        <Options />
+      </div>
     </Store.Provider>
   )
 }

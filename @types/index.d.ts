@@ -8,8 +8,7 @@ type MessageType =
   | 'settextsuccess'
   | 'copytext'
   | 'copytextsuccess'
-  | 'cleartext'
-  | 'cleartextsuccess'
+  | 'closeplugin'
 
 type PluginMessage = {
   type: MessageType

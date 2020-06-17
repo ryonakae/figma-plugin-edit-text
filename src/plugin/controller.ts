@@ -3,7 +3,7 @@ import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
 const UI_WIDTH = 250
-const UI_MIN_HEIGHT = 200
+const UI_MIN_HEIGHT = 300
 const UI_MAX_HEIGHT = 450
 
 class Controller {
@@ -99,32 +99,41 @@ class Controller {
   }
 }
 
-const contoller = new Controller()
+function bootstrap(): void {
+  const contoller = new Controller()
 
-figma.showUI(__html__, { width: UI_WIDTH, height: UI_MIN_HEIGHT })
+  figma.showUI(__html__, { width: UI_WIDTH, height: UI_MIN_HEIGHT })
 
-figma.ui.onmessage = async (msg: PluginMessage): Promise<void> => {
-  console.log(msg)
+  figma.ui.onmessage = (msg: PluginMessage): void => {
+    console.log(msg)
 
-  switch (msg.type) {
-    case 'resize':
-      contoller.resizeUI(msg.data.height)
-      break
-    case 'getoptions':
-      contoller.getOptions()
-      break
-    case 'setoptions':
-      contoller.setOptions({
-        isSendTextAtCmdAndEnter: msg.data.isSendTextAtCmdAndEnter,
-        isSetSelectionText: msg.data.isSetSelectionText
-      })
-      break
-    case 'settext':
-      contoller.setText(msg.data.text)
-      break
-    default:
-      break
+    switch (msg.type) {
+      case 'resize':
+        contoller.resizeUI(msg.data.height)
+        break
+      case 'getoptions':
+        contoller.getOptions()
+        break
+      case 'setoptions':
+        contoller.setOptions({
+          isSendTextAtCmdAndEnter: msg.data.isSendTextAtCmdAndEnter,
+          isSetSelectionText: msg.data.isSetSelectionText
+        })
+        break
+      case 'settext':
+        contoller.setText(msg.data.text)
+        break
+      case 'closeplugin':
+        figma.closePlugin()
+        break
+      default:
+        break
+    }
   }
+
+  figma.on('selectionchange', contoller.onSelectionChange)
+
+  contoller.onSelectionChange()
 }
 
-figma.on('selectionchange', contoller.onSelectionChange)
+bootstrap()
