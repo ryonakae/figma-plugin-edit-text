@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Store from '@/app/Store'
 
 const TextArea: React.FC = () => {
@@ -10,6 +10,9 @@ const TextArea: React.FC = () => {
     sendTextToFigma
   } = Store.useContainer()
   const textAreaRef = useRef(null)
+  const selectionTimer = useRef(0)
+  const selectionRangeTimer = useRef(0)
+  const TIMER_LENGTH = 500
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     console.log('textarea onChange')
@@ -17,16 +20,27 @@ const TextArea: React.FC = () => {
   }
 
   function focusToTextArea(): void {
+    console.log('focusToTextArea')
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
     textArea.focus()
   }
 
-  function setSelectionRange(): void {
+  function onSelectionChange(): void {
+    window.clearTimeout(selectionTimer.current)
+    selectionTimer.current = window.setTimeout(() => {
+      if (selections.length > 0) {
+        focusToTextArea()
+      }
+    }, TIMER_LENGTH)
+  }
+
+  function onSelectionRangeChange(): void {
+    window.clearTimeout(selectionRangeTimer.current)
+
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
-    const range = inputTextSelectionRange.end - inputTextSelectionRange.start
-    // if (range)
     textArea.setSelectionRange(inputTextSelectionRange.start, inputTextSelectionRange.end)
-    // textArea.blur()
+
+    selectionRangeTimer.current = window.setTimeout(focusToTextArea, TIMER_LENGTH)
   }
 
   useEffect(() => {
@@ -35,15 +49,13 @@ const TextArea: React.FC = () => {
     }
   }, [isTextAreaDisabled])
 
-  // useEffect(() => {
-  //   if (selections.length > 0) {
-  //     focusToTextArea()
-  //   }
-  // }, [selections])
+  useEffect(() => {
+    onSelectionChange()
+  }, [selections])
 
   useEffect(() => {
     console.log('inputTextSelectionRange changed', inputTextSelectionRange)
-    setSelectionRange()
+    onSelectionRangeChange()
   }, [inputTextSelectionRange])
 
   return (
