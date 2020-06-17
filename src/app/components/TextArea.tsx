@@ -23,6 +23,8 @@ const TextArea: React.FC = () => {
 
   function setSelectionRange(): void {
     const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
+    const range = inputTextSelectionRange.end - inputTextSelectionRange.start
+    // if (range)
     textArea.setSelectionRange(inputTextSelectionRange.start, inputTextSelectionRange.end)
     // textArea.blur()
   }
@@ -33,11 +35,11 @@ const TextArea: React.FC = () => {
     }
   }, [isTextAreaDisabled])
 
-  useEffect(() => {
-    if (selections.length > 0) {
-      focusToTextArea()
-    }
-  }, [selections])
+  // useEffect(() => {
+  //   if (selections.length > 0) {
+  //     focusToTextArea()
+  //   }
+  // }, [selections])
 
   useEffect(() => {
     console.log('inputTextSelectionRange changed', inputTextSelectionRange)
