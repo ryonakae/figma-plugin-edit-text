@@ -1,8 +1,8 @@
 import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
-const UI_WIDTH = 250
-const UI_MIN_HEIGHT = 250
+const UI_WIDTH = 300
+const UI_MIN_HEIGHT = 300
 const UI_MAX_HEIGHT = 450
 
 class Controller {
