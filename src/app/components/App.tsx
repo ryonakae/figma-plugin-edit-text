@@ -31,15 +31,6 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'getoptions'
-        }
-      } as Message,
-      '*'
-    )
-
     document.addEventListener('keydown', onKeyDown)
   }, [])
 

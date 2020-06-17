@@ -1,9 +1,5 @@
 type MessageType =
   | 'resize'
-  | 'getoptions'
-  | 'getoptionssuccess'
-  | 'setoptions'
-  | 'setoptionssuccess'
   | 'settext'
   | 'settextsuccess'
   | 'copytext'
