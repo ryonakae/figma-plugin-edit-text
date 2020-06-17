@@ -4,9 +4,21 @@ import Store from '@/app/Store'
 import TextArea from '@/app/components/TextArea'
 
 const App: React.FC = () => {
-  function onKeyUp(event: KeyboardEvent): void {
+  function onKeyDown(event: KeyboardEvent): void {
+    console.log(event)
     // esc
     if (event.keyCode === 27) {
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'closeplugin'
+          }
+        } as Message,
+        '*'
+      )
+    }
+    // cmd + enter
+    else if ((event.metaKey || event.ctrlKey) && event.keyCode == 13) {
       parent.postMessage(
         {
           pluginMessage: {
@@ -28,7 +40,7 @@ const App: React.FC = () => {
       '*'
     )
 
-    document.addEventListener('keyup', onKeyUp)
+    document.addEventListener('keydown', onKeyDown)
   }, [])
 
   return (
