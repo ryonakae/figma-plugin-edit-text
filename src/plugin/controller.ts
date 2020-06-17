@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
@@ -27,7 +28,7 @@ class Controller {
     if (selections.length === 0) {
       console.log('nothing selection')
     } else {
-      selections.map(async selection => {
+      _.map(selections, async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
           const selectionRange = selection.characters.length
@@ -51,7 +52,7 @@ class Controller {
 
     const _selections: string[] = []
     if (selections.length > 0) {
-      selections.map(selection => {
+      _.map(selections, selection => {
         _selections.push(selection.id)
       })
     }
