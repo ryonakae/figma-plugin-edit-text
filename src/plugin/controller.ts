@@ -85,17 +85,29 @@ class Controller {
 
       const selectedTextRange = figma.currentPage.selectedTextRange
       if (selectedTextRange) {
-        console.log('part of text are selected', selectedTextRange)
-        figma.ui.postMessage({
-          type: 'copytext',
-          data: {
-            text: textNode.characters,
-            selectedTextRange: {
-              start: selectedTextRange.start,
-              end: selectedTextRange.end
+        if (
+          selectedTextRange.start !== selectedTextRange.end ||
+          textNode.characters.length !== selectedTextRange.end
+        ) {
+          console.log('part of text are selected', selectedTextRange)
+          figma.ui.postMessage({
+            type: 'copytext',
+            data: {
+              text: textNode.characters,
+              selectedTextRange: {
+                start: selectedTextRange.start,
+                end: selectedTextRange.end
+              }
             }
-          }
-        } as PluginMessage)
+          } as PluginMessage)
+        } else {
+          figma.ui.postMessage({
+            type: 'copytext',
+            data: {
+              text: textNode.characters
+            }
+          } as PluginMessage)
+        }
       } else {
         figma.ui.postMessage({
           type: 'copytext',
