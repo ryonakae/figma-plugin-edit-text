@@ -82,12 +82,28 @@ class Controller {
     if (selections && selections.length === 1 && selections[0].type === 'TEXT') {
       const textNode = selections[0]
       console.log('select only one text node', textNode)
-      figma.ui.postMessage({
-        type: 'copytext',
-        data: {
-          text: textNode.characters
-        }
-      } as PluginMessage)
+
+      const selectedTextRange = figma.currentPage.selectedTextRange
+      if (selectedTextRange) {
+        console.log('part of text are selected', selectedTextRange)
+        figma.ui.postMessage({
+          type: 'copytext',
+          data: {
+            text: textNode.characters,
+            selectedTextRange: {
+              start: selectedTextRange.start,
+              end: selectedTextRange.end
+            }
+          }
+        } as PluginMessage)
+      } else {
+        figma.ui.postMessage({
+          type: 'copytext',
+          data: {
+            text: textNode.characters
+          }
+        } as PluginMessage)
+      }
     } else {
       figma.ui.postMessage({
         type: 'copytext',

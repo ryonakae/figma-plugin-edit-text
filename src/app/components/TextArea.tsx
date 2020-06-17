@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Store from '@/app/Store'
 
 const TextArea: React.FC = () => {
-  const { inputText, sendTextToFigma } = Store.useContainer()
+  const { inputText, inputTextSelectionRange, sendTextToFigma } = Store.useContainer()
   const textAreaRef = useRef(null)
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
@@ -28,9 +28,19 @@ const TextArea: React.FC = () => {
     textArea.focus()
   }
 
+  function setSelectionRange(): void {
+    const textArea = (textAreaRef.current as unknown) as HTMLTextAreaElement
+    textArea.setSelectionRange(inputTextSelectionRange.start, inputTextSelectionRange.end)
+  }
+
   useEffect(() => {
     focusToTextArea()
   }, [])
+
+  useEffect(() => {
+    console.log('inputTextSelectionRange changed', inputTextSelectionRange)
+    setSelectionRange()
+  }, [inputTextSelectionRange])
 
   return (
     <div>

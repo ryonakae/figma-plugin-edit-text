@@ -9,6 +9,7 @@ type MessageType =
   | 'copytext'
   | 'copytextsuccess'
   | 'closeplugin'
+  | 'setselectionrange'
 
 type PluginMessage = {
   type: MessageType
