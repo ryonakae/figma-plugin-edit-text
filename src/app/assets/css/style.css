@@ -1,0 +1,61 @@
+@import url('https://rsms.me/inter/inter.css');
+@import 'ress';
+@import 'custom-properties.css';
+
+body {
+  font-family: var(--fontFamily);
+  font-size: var(--fontSize);
+  font-weight: var(--fontWeight-default);
+  line-height: var(--lineHeight);
+  color: var(--color-text);
+  cursor: default;
+  user-select: none;
+  background: var(--color-bg);
+}
+
+:any-link {
+  color: var(--color-active);
+  text-decoration: none;
+  cursor: default;
+}
+
+#plugin {
+  width: 100vw;
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-default) var(--spacing-default) var(--spacing-list);
+}
+
+.textarea {
+  resize: none;
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-text);
+  font-size: var(--fontSize-textArea);
+  line-height: var(--lineHeight-textArea);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-default);
+
+  &::placeholder {
+    color: var(--color-text-sub);
+  }
+
+  &:disabled {
+    background-color: var(--color-disabled);
+  }
+
+  &:not(:disabled):focus {
+    border: 1px solid var(--color-active);
+    outline: 1px solid var(--color-active);
+    outline-offset: -2px;
+  }
+}
+
+.note {
+  margin-top: var(--spacing-list);
+}
