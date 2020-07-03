@@ -2,8 +2,8 @@ import _ from 'lodash'
 import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
-const UI_WIDTH = 350
-const UI_MIN_HEIGHT = 350
+const UI_WIDTH = 300
+const UI_MIN_HEIGHT = 300
 const UI_MAX_HEIGHT = 450
 
 class Controller {
@@ -17,6 +17,29 @@ class Controller {
     }
 
     figma.ui.resize(UI_WIDTH, _height)
+  }
+
+  getOptions(): void {
+    const isEditRealtime = Util.toBoolean(figma.root.getPluginData('isEditRealtime'))
+
+    figma.ui.postMessage({
+      type: 'getoptionssuccess',
+      data: {
+        isEditRealtime
+      }
+    } as PluginMessage)
+
+    console.log('getOptions success', isEditRealtime)
+  }
+
+  setOptions(options: Options): void {
+    figma.root.setPluginData('isEditRealtime', String(options.isEditRealtime))
+
+    figma.ui.postMessage({
+      type: 'setoptionssuccess'
+    } as PluginMessage)
+
+    console.log('setOptions success', figma.root.getPluginData('isEditRealtime'))
   }
 
   setText(text: string): void {
@@ -149,6 +172,14 @@ function bootstrap(): void {
     switch (msg.type) {
       case 'resize':
         contoller.resizeUI(msg.data.height)
+        break
+      case 'getoptions':
+        contoller.getOptions()
+        break
+      case 'setoptions':
+        contoller.setOptions({
+          isEditRealtime: msg.data.isEditRealtime
+        })
         break
       case 'settext':
         contoller.setText(msg.data.text)

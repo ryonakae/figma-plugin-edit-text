@@ -13,8 +13,10 @@
   --color-text: #333;
   --color-text-sub: #b3b3b3;
   --color-border: rgba(0, 0, 0, 0.1);
-  --color-disabled: #fafafa;
+  --color-textarea-disabled: #fafafa;
   --color-active: #18a0fb;
+  --color-segmented-control-bg: #e4e4e4;
+  --color-return-button-bg: rgba(0,0,0,.06);
 
   /* radius */
   --radius-default: 2px;
@@ -24,6 +26,7 @@
   --spacing-default: 16px;
   --spacing-text: 8px;
   --spacing-list: 12px;
+  --spacing-options: 6px;
 
   /* size */
   --height-row-default: 40px;
