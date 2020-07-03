@@ -54,6 +54,7 @@ class Controller {
       _.map(selections, async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
+          console.log('selection.characters', selection.characters, 'text', text)
           selection.characters = text
         }
       })
@@ -98,13 +99,15 @@ class Controller {
         // それがテキストのとき
         if (selections[0].type === 'TEXT') {
           const textNode = selections[0]
+          const selectedTextRange = figma.currentPage.selectedTextRange
           console.log('select only one text node', textNode)
 
-          const selectedTextRange = figma.currentPage.selectedTextRange
           if (
             selectedTextRange &&
             (selectedTextRange.start !== selectedTextRange.end ||
-              textNode.characters.length !== selectedTextRange.end)
+              textNode.characters.length !== selectedTextRange.end ||
+              (selectedTextRange.start === textNode.characters.length &&
+                selectedTextRange.end === textNode.characters.length))
           ) {
             console.log('part of text are selected', selectedTextRange)
             figma.ui.postMessage({
@@ -121,7 +124,11 @@ class Controller {
             figma.ui.postMessage({
               type: 'copytext',
               data: {
-                text: textNode.characters
+                text: textNode.characters,
+                selectedTextRange: {
+                  start: 0,
+                  end: textNode.characters.length
+                }
               }
             } as PluginMessage)
           }
