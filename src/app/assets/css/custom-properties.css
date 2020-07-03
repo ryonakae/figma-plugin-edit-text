@@ -16,6 +16,7 @@
   --color-textarea-disabled: #fafafa;
   --color-active: #18a0fb;
   --color-segmented-control-bg: #e4e4e4;
+  --color-return-button-bg: rgba(0,0,0,.06);
 
   /* radius */
   --radius-default: 2px;
