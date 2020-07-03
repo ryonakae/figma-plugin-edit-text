@@ -71,14 +71,16 @@ body {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-default);
+  opacity: 0.25;
 
   &.is-disabled {
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.25 !important;
   }
 
   &:hover {
     background-color: var(--color-segmented-control-bg);
+    opacity: 1;
   }
 }
 

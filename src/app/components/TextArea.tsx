@@ -156,7 +156,7 @@ const TextArea: React.FC = () => {
           onClick={onReturnClick}
           className={`textarea-return ${inputText.length === 0 ? 'is-disabled' : ''}`}
         >
-          <span>→</span>
+          <img src={require('@/app/assets/img/icon_return.svg').default} alt="" />
         </div>
       ) : null}
     </div>
