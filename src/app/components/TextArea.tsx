@@ -18,6 +18,7 @@ const TextArea: React.FC = () => {
   const selectionRangeTimer = useRef(0)
   const inputTextRef = useRef(inputText)
   const isEditRealtimeRef = useRef(isEditRealtime)
+  const isTextAreaDisabledRef = useRef(isTextAreaDisabled)
   const ONCHANGE_TIMER_DURATION = 100
   const SELECTION_TIMER_DURATION = 500
 
@@ -47,7 +48,7 @@ const TextArea: React.FC = () => {
   function onSelectionChange(): void {
     window.clearTimeout(selectionTimer.current)
     selectionTimer.current = window.setTimeout(() => {
-      if (selections.length > 0) {
+      if (selections.length > 0 && inputText.length > 0) {
         focusToTextArea()
       }
     }, SELECTION_TIMER_DURATION)
@@ -62,19 +63,33 @@ const TextArea: React.FC = () => {
     selectionRangeTimer.current = window.setTimeout(focusToTextArea, SELECTION_TIMER_DURATION)
   }
 
+  function closePlugin(): void {
+    console.log('closePlugin')
+    console.log('inputTextRef.current.length', inputTextRef.current.length)
+
+    // プラグインを閉じるとき、文字が空だと次回起動時に入力が反映されなくなってしまう
+    // 仕方なく、文字が空の場合は半角スペース1つを入れてプラグインを閉じる
+    if (inputTextRef.current.length === 0) {
+      setInputText(' ')
+      sendTextToFigma(' ')
+    }
+
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'closeplugin'
+        }
+      } as Message,
+      '*'
+    )
+  }
+
   function onKeyDown(event: KeyboardEvent): void {
     console.log(event)
     // esc
     if (event.keyCode === 27) {
       console.log('press esc key')
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'closeplugin'
-          }
-        } as Message,
-        '*'
-      )
+      closePlugin()
     }
     // cmd + enter
     else if ((event.metaKey || event.ctrlKey) && event.keyCode == 13) {
@@ -87,28 +102,13 @@ const TextArea: React.FC = () => {
         sendTextToFigma(inputTextRef.current)
       }
 
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'closeplugin'
-          }
-        } as Message,
-        '*'
-      )
+      closePlugin()
     }
   }
 
   function onReturnClick(): void {
     sendTextToFigma(inputText)
-
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'closeplugin'
-        }
-      } as Message,
-      '*'
-    )
+    closePlugin()
   }
 
   useEffect(() => {
@@ -126,7 +126,8 @@ const TextArea: React.FC = () => {
   }, [isEditRealtime])
 
   useEffect(() => {
-    if (!isTextAreaDisabled) {
+    isTextAreaDisabledRef.current = isTextAreaDisabled
+    if (!isTextAreaDisabled && inputText.length > 0) {
       focusToTextArea()
     }
   }, [isTextAreaDisabled])
