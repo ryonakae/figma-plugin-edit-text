@@ -7,6 +7,7 @@ const TextArea: React.FC = () => {
     inputText,
     inputTextSelectionRange,
     isTextAreaDisabled,
+    isEditRealtime,
     selections,
     setInputText,
     sendTextToFigma
@@ -15,20 +16,26 @@ const TextArea: React.FC = () => {
   const onChangeTimer = useRef(0)
   const selectionTimer = useRef(0)
   const selectionRangeTimer = useRef(0)
+  const inputTextRef = useRef(inputText)
+  const isEditRealtimeRef = useRef(isEditRealtime)
   const ONCHANGE_TIMER_DURATION = 100
   const SELECTION_TIMER_DURATION = 500
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
-    console.log('textarea onChange')
-
-    window.clearInterval(onChangeTimer.current)
+    console.log('textarea onChange', 'isEditRealtime:', isEditRealtime)
 
     event.persist()
+
+    if (isEditRealtime) {
+      window.clearInterval(onChangeTimer.current)
+      onChangeTimer.current = window.setTimeout(() => {
+        sendTextToFigma(event.target.value)
+      }, ONCHANGE_TIMER_DURATION)
+    }
+
     setInputText(event.target.value)
 
-    onChangeTimer.current = window.setTimeout(() => {
-      sendTextToFigma(event.target.value)
-    }, ONCHANGE_TIMER_DURATION)
+    console.log('inputText', inputText)
   }
 
   function focusToTextArea(): void {
@@ -55,6 +62,69 @@ const TextArea: React.FC = () => {
     selectionRangeTimer.current = window.setTimeout(focusToTextArea, SELECTION_TIMER_DURATION)
   }
 
+  function onKeyDown(event: KeyboardEvent): void {
+    console.log(event)
+    // esc
+    if (event.keyCode === 27) {
+      console.log('press esc key')
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'closeplugin'
+          }
+        } as Message,
+        '*'
+      )
+    }
+    // cmd + enter
+    else if ((event.metaKey || event.ctrlKey) && event.keyCode == 13) {
+      console.log(
+        'press cmd + enter key',
+        `inputText(Ref): ${inputTextRef.current}`,
+        `isEditRealtime(Ref): ${isEditRealtimeRef.current}`
+      )
+      if (!isEditRealtimeRef.current) {
+        sendTextToFigma(inputTextRef.current)
+      }
+
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'closeplugin'
+          }
+        } as Message,
+        '*'
+      )
+    }
+  }
+
+  function onReturnClick(): void {
+    sendTextToFigma(inputText)
+
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'closeplugin'
+        }
+      } as Message,
+      '*'
+    )
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown, { passive: true })
+  }, [])
+
+  useEffect(() => {
+    inputTextRef.current = inputText
+    console.log('inputText update', inputText)
+  }, [inputText])
+
+  useEffect(() => {
+    isEditRealtimeRef.current = isEditRealtime
+    console.log('isEditRealtime update', isEditRealtime)
+  }, [isEditRealtime])
+
   useEffect(() => {
     if (!isTextAreaDisabled) {
       focusToTextArea()
@@ -71,15 +141,25 @@ const TextArea: React.FC = () => {
   }, [inputTextSelectionRange])
 
   return (
-    <textarea
-      className="textarea"
-      disabled={isTextAreaDisabled}
-      value={inputText}
-      onChange={onChange}
-      // onBlur={focusToTextArea}
-      placeholder={isTextAreaDisabled ? 'Select text layer(s)' : 'Type text here'}
-      ref={textAreaRef}
-    />
+    <div className="textarea">
+      <textarea
+        className="textarea-content"
+        disabled={isTextAreaDisabled}
+        value={inputText}
+        onChange={onChange}
+        // onBlur={focusToTextArea}
+        placeholder={isTextAreaDisabled ? 'Select text layer(s)' : 'Type text here'}
+        ref={textAreaRef}
+      />
+      {!isEditRealtime && !isTextAreaDisabled ? (
+        <div
+          onClick={onReturnClick}
+          className={`textarea-return ${inputText.length === 0 ? 'is-disabled' : ''}`}
+        >
+          <span>→</span>
+        </div>
+      ) : null}
+    </div>
   )
 }
 

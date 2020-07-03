@@ -32,8 +32,13 @@ body {
 }
 
 .textarea {
+  position: relative;
   flex: 1;
+}
+
+.textarea-content {
   width: 100%;
+  height: 100%;
   padding: var(--spacing-text);
   font-size: var(--fontSize-textArea);
   line-height: var(--lineHeight-textArea);
@@ -46,7 +51,7 @@ body {
   }
 
   &:disabled {
-    background-color: var(--color-disabled);
+    background-color: var(--color-textarea-disabled);
   }
 
   &:not(:disabled):focus {
@@ -56,17 +61,34 @@ body {
   }
 }
 
-.note {
-  margin-top: var(--spacing-list);
+.textarea-return {
+  position: absolute;
+  right: var(--spacing-text);
+  bottom: var(--spacing-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-default);
+
+  &.is-disabled {
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  &:hover {
+    background-color: var(--color-segmented-control-bg);
+  }
 }
 
 /* options */
 .options {
   z-index: var(--zIndex-options);
-  padding: var(--spacing-list) calc(var(--spacing-default) / 2) var(--spacing-list)
-    var(--spacing-default);
+  padding: var(--spacing-list) 0 0;
   background: var(--color-bg);
-  border-top: 1px solid var(--color-border);
+
+  /* border-top: 1px solid var(--color-border); */
 }
 
 .options-item {
@@ -88,7 +110,7 @@ body {
       width: 100%;
       height: 100%;
       content: '';
-      border: 1px solid var(--color-segmentedControlBg);
+      border: 1px solid var(--color-segmented-control-bg);
       border-radius: var(--radius-default);
     }
   }
@@ -109,7 +131,7 @@ body {
 
   @nest .segmentedControl.is-false & {
     &:first-child {
-      background-color: var(--color-segmentedControlBg);
+      background-color: var(--color-segmented-control-bg);
     }
 
     &:last-child {
@@ -123,7 +145,7 @@ body {
     }
 
     &:last-child {
-      background-color: var(--color-segmentedControlBg);
+      background-color: var(--color-segmented-control-bg);
     }
   }
 }

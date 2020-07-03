@@ -29,6 +29,7 @@ const Options: React.FC = () => {
     if (!isMounted.current) {
       isMounted.current = true
       console.log('optios mounted')
+      console.log('getoptions')
       parent.postMessage(
         {
           pluginMessage: {
@@ -37,7 +38,6 @@ const Options: React.FC = () => {
         } as Message,
         '*'
       )
-      console.log('getoptions', 'isEditRealtime', isEditRealtime)
     }
   }, [])
 
