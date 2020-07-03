@@ -28,7 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: var(--spacing-default) var(--spacing-default) var(--spacing-list);
+  padding: var(--spacing-default) var(--spacing-default) var(--spacing-options);
 }
 
 .textarea {
@@ -86,11 +86,8 @@ body {
 
 /* options */
 .options {
-  z-index: var(--zIndex-options);
-  padding: var(--spacing-list) 0 0;
+  padding-top: var(--spacing-options);
   background: var(--color-bg);
-
-  /* border-top: 1px solid var(--color-border); */
 }
 
 .options-item {
