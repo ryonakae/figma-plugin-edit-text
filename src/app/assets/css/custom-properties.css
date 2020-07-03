@@ -15,6 +15,7 @@
   --color-border: rgba(0, 0, 0, 0.1);
   --color-disabled: #fafafa;
   --color-active: #18a0fb;
+  --color-segmentedControlBg: #e4e4e4;
 
   /* radius */
   --radius-default: 2px;

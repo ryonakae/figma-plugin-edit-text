@@ -32,12 +32,12 @@ body {
 }
 
 .textarea {
-  resize: none;
   flex: 1;
   width: 100%;
   padding: var(--spacing-text);
   font-size: var(--fontSize-textArea);
   line-height: var(--lineHeight-textArea);
+  resize: none;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-default);
 
@@ -58,4 +58,72 @@ body {
 
 .note {
   margin-top: var(--spacing-list);
+}
+
+/* options */
+.options {
+  z-index: var(--zIndex-options);
+  padding: var(--spacing-list) calc(var(--spacing-default) / 2) var(--spacing-list)
+    var(--spacing-default);
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.options-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--height-row-small);
+}
+
+/* segmented control */
+.segmentedControl {
+  position: relative;
+  display: flex;
+  border: 2px solid transparent;
+
+  &:hover {
+    &::before {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      content: '';
+      border: 1px solid var(--color-segmentedControlBg);
+      border-radius: var(--radius-default);
+    }
+  }
+}
+
+.segmentedControl-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-default);
+
+  & img {
+    width: 16px;
+    height: 16px;
+  }
+
+  @nest .segmentedControl.is-false & {
+    &:first-child {
+      background-color: var(--color-segmentedControlBg);
+    }
+
+    &:last-child {
+      background-color: transparent;
+    }
+  }
+
+  @nest .segmentedControl.is-true & {
+    &:first-child {
+      background-color: transparent;
+    }
+
+    &:last-child {
+      background-color: var(--color-segmentedControlBg);
+    }
+  }
 }

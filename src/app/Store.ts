@@ -9,7 +9,13 @@ function Store() {
     end: 0
   })
   const [isTextAreaDisabled, setIsTextAreaDisabled] = useState<boolean>(true)
+  const [isEditRealtime, setIsEditRealtime] = useState<boolean>(true)
   const [selections, setSelections] = useState<SceneNode[]>([])
+
+  function updateOptions(options: Options): void {
+    console.log('updateOptions', options)
+    setIsEditRealtime(options.isEditRealtime)
+  }
 
   function sendTextToFigma(text: string): void {
     console.log('sendTextToFigma', text)
@@ -33,6 +39,11 @@ function Store() {
       const pluginData: PluginMessage['data'] = msg.data.pluginMessage.data
 
       switch (messageType) {
+        case 'getoptionssuccess':
+          updateOptions({
+            isEditRealtime: pluginData.isEditRealtime
+          })
+          break
         case 'selectionchange':
           setSelections(pluginData.selections)
           break
@@ -69,10 +80,12 @@ function Store() {
     inputText,
     inputTextSelectionRange,
     isTextAreaDisabled,
+    isEditRealtime,
     selections,
     setInputText,
     setInputTextSelectionRange,
     setIsTextAreaDisabled,
+    setIsEditRealtime,
     setSelections,
     sendTextToFigma
   }

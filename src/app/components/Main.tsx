@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import Store from '@/app/Store'
 import TextArea from '@/app/components/TextArea'
+import Options from '@/app/components/Options'
 
 const Main: React.FC = () => {
   const { isTextAreaDisabled, selections } = Store.useContainer()
@@ -38,6 +39,7 @@ const Main: React.FC = () => {
   return (
     <>
       <TextArea />
+      <Options />
       <div className="note">
         <div>Select text layer(s) and type in textarea.</div>
         <div>Press Esc or Cmd + Enter to close plugin.</div>

@@ -19,6 +19,29 @@ class Controller {
     figma.ui.resize(UI_WIDTH, _height)
   }
 
+  getOptions(): void {
+    const isEditRealtime = Util.toBoolean(figma.root.getPluginData('isEditRealtime'))
+
+    figma.ui.postMessage({
+      type: 'getoptionssuccess',
+      data: {
+        isEditRealtime
+      }
+    } as PluginMessage)
+
+    console.log('getOptions success', isEditRealtime)
+  }
+
+  setOptions(options: Options): void {
+    figma.root.setPluginData('isEditRealtime', String(options.isEditRealtime))
+
+    figma.ui.postMessage({
+      type: 'setoptionssuccess'
+    } as PluginMessage)
+
+    console.log('setOptions success', figma.root.getPluginData('isEditRealtime'))
+  }
+
   setText(text: string): void {
     console.log('setText', text)
 
@@ -149,6 +172,14 @@ function bootstrap(): void {
     switch (msg.type) {
       case 'resize':
         contoller.resizeUI(msg.data.height)
+        break
+      case 'getoptions':
+        contoller.getOptions()
+        break
+      case 'setoptions':
+        contoller.setOptions({
+          isEditRealtime: msg.data.isEditRealtime
+        })
         break
       case 'settext':
         contoller.setText(msg.data.text)

@@ -1,5 +1,9 @@
 type MessageType =
   | 'resize'
+  | 'getoptions'
+  | 'getoptionssuccess'
+  | 'setoptions'
+  | 'setoptionssuccess'
   | 'settext'
   | 'settextsuccess'
   | 'copytext'
@@ -15,4 +19,8 @@ type PluginMessage = {
 
 type Message = {
   pluginMessage: PluginMessage
+}
+
+type Options = {
+  isEditRealtime: boolean
 }
