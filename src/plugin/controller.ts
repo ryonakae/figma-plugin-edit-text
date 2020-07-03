@@ -2,8 +2,8 @@ import _ from 'lodash'
 import Util from '@/app/Util'
 
 const CLIENT_STORAGE_KEY_NAME = 'edit-text'
-const UI_WIDTH = 350
-const UI_MIN_HEIGHT = 350
+const UI_WIDTH = 300
+const UI_MIN_HEIGHT = 300
 const UI_MAX_HEIGHT = 450
 
 class Controller {
@@ -19,6 +19,29 @@ class Controller {
     figma.ui.resize(UI_WIDTH, _height)
   }
 
+  getOptions(): void {
+    const isEditRealtime = Util.toBoolean(figma.root.getPluginData('isEditRealtime'))
+
+    figma.ui.postMessage({
+      type: 'getoptionssuccess',
+      data: {
+        isEditRealtime
+      }
+    } as PluginMessage)
+
+    console.log('getOptions success', isEditRealtime)
+  }
+
+  setOptions(options: Options): void {
+    figma.root.setPluginData('isEditRealtime', String(options.isEditRealtime))
+
+    figma.ui.postMessage({
+      type: 'setoptionssuccess'
+    } as PluginMessage)
+
+    console.log('setOptions success', figma.root.getPluginData('isEditRealtime'))
+  }
+
   setText(text: string): void {
     console.log('setText', text)
 
@@ -31,6 +54,7 @@ class Controller {
       _.map(selections, async selection => {
         console.log(selection, selection.type)
         if (selection.type === 'TEXT') {
+          console.log('selection.characters', selection.characters, 'text', text)
           selection.characters = text
         }
       })
@@ -75,13 +99,15 @@ class Controller {
         // それがテキストのとき
         if (selections[0].type === 'TEXT') {
           const textNode = selections[0]
+          const selectedTextRange = figma.currentPage.selectedTextRange
           console.log('select only one text node', textNode)
 
-          const selectedTextRange = figma.currentPage.selectedTextRange
           if (
             selectedTextRange &&
             (selectedTextRange.start !== selectedTextRange.end ||
-              textNode.characters.length !== selectedTextRange.end)
+              textNode.characters.length !== selectedTextRange.end ||
+              (selectedTextRange.start === textNode.characters.length &&
+                selectedTextRange.end === textNode.characters.length))
           ) {
             console.log('part of text are selected', selectedTextRange)
             figma.ui.postMessage({
@@ -98,7 +124,11 @@ class Controller {
             figma.ui.postMessage({
               type: 'copytext',
               data: {
-                text: textNode.characters
+                text: textNode.characters,
+                selectedTextRange: {
+                  start: 0,
+                  end: textNode.characters.length
+                }
               }
             } as PluginMessage)
           }
@@ -149,6 +179,14 @@ function bootstrap(): void {
     switch (msg.type) {
       case 'resize':
         contoller.resizeUI(msg.data.height)
+        break
+      case 'getoptions':
+        contoller.getOptions()
+        break
+      case 'setoptions':
+        contoller.setOptions({
+          isEditRealtime: msg.data.isEditRealtime
+        })
         break
       case 'settext':
         contoller.setText(msg.data.text)

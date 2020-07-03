@@ -3,13 +3,14 @@
 ![](./cover.png)
 
 A simple plugin to edit selected text(s) in real time.  
-Now you can type double-byte character such as CJK (Chinese, Japanese, Korian) without bugs!
+Now you can type double-byte character such as CJK (Chinese, Japanese, Korean) without bugs!
 
 ## 🔥 What you can:
 
 - Edit characters of selected text layer in real time
+  - Now you can toggle real-time setting
 - Edit multiple text layers
-- Type double-byte character such as CJK (Chinese, Japanese, Korian) without bugs
+- Type double-byte character such as CJK (Chinese, Japanese, Korean) without bugs
 - Press 'Esc' or 'Cmd + Enter' to close this plugin
 
 ## 📮 Support:
