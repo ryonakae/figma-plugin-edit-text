@@ -2,7 +2,7 @@
   "name": "figma-plugin-team-edit-text",
   "version": "3.0.0",
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "ress": "^2.0.4",
