@@ -23,4 +23,5 @@ type Message = {
 
 type Options = {
   isEditRealtime: boolean
+  isCloseAtEnter: boolean
 }

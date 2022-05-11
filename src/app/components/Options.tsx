@@ -2,7 +2,12 @@ import React, { useEffect, useRef } from 'react'
 import Store from '@/app/Store'
 
 const Options: React.FC = () => {
-  const { isEditRealtime, setIsEditRealtime } = Store.useContainer()
+  const {
+    isEditRealtime,
+    isCloseAtEnter,
+    setIsEditRealtime,
+    setIsCloseAtEnter
+  } = Store.useContainer()
   const isMounted = useRef(false)
 
   function setCurrentOptions(): void {
@@ -12,7 +17,8 @@ const Options: React.FC = () => {
         pluginMessage: {
           type: 'setoptions',
           data: {
-            isEditRealtime
+            isEditRealtime,
+            isCloseAtEnter
           }
         }
       } as Message,
@@ -23,6 +29,11 @@ const Options: React.FC = () => {
   function onEditRealtimeClick(): void {
     console.log('onEditRealtimeClick')
     setIsEditRealtime(!isEditRealtime)
+  }
+
+  function onCloseAtEnterClick(): void {
+    console.log('onCloseAtEnterClick')
+    setIsCloseAtEnter(!isCloseAtEnter)
   }
 
   useEffect(() => {
@@ -41,13 +52,30 @@ const Options: React.FC = () => {
     }
   }, [])
 
-  useEffect(setCurrentOptions, [isEditRealtime])
+  useEffect(setCurrentOptions, [isEditRealtime, isCloseAtEnter])
 
   return (
     <div className="options">
-      <div className="options-item" onClick={onEditRealtimeClick}>
+      <div className="options-item">
         <div>Edit in Realtime</div>
-        <div className={`segmentedControl is-${String(isEditRealtime)}`}>
+        <div
+          className={`segmentedControl is-${String(isEditRealtime)}`}
+          onClick={onEditRealtimeClick}
+        >
+          <div className="segmentedControl-segment">
+            <img src={require('@/app/assets/img/icon_hyphen.svg').default} alt="" />
+          </div>
+          <div className="segmentedControl-segment">
+            <img src={require('@/app/assets/img/icon_check.svg').default} alt="" />
+          </div>
+        </div>
+      </div>
+      <div className="options-item">
+        <div>Close at Enter</div>
+        <div
+          className={`segmentedControl is-${String(isCloseAtEnter)}`}
+          onClick={onCloseAtEnterClick}
+        >
           <div className="segmentedControl-segment">
             <img src={require('@/app/assets/img/icon_hyphen.svg').default} alt="" />
           </div>

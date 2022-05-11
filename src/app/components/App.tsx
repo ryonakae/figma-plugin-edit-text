@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import '@/app/assets/css/style.css'
 import Store from '@/app/Store'
 import Main from '@/app/components/Main'

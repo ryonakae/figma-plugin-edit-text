@@ -21,25 +21,32 @@ class Controller {
 
   getOptions(): void {
     const isEditRealtime = Util.toBoolean(figma.root.getPluginData('isEditRealtime'))
+    const isCloseAtEnter = Util.toBoolean(figma.root.getPluginData('isCloseAtEnter'))
 
     figma.ui.postMessage({
       type: 'getoptionssuccess',
       data: {
-        isEditRealtime
-      }
+        isEditRealtime,
+        isCloseAtEnter
+      } as Options
     } as PluginMessage)
 
-    console.log('getOptions success', isEditRealtime)
+    console.log('getOptions success', isEditRealtime, isCloseAtEnter)
   }
 
   setOptions(options: Options): void {
     figma.root.setPluginData('isEditRealtime', String(options.isEditRealtime))
+    figma.root.setPluginData('isCloseAtEnter', String(options.isCloseAtEnter))
 
     figma.ui.postMessage({
       type: 'setoptionssuccess'
     } as PluginMessage)
 
-    console.log('setOptions success', figma.root.getPluginData('isEditRealtime'))
+    console.log(
+      'setOptions success',
+      figma.root.getPluginData('isEditRealtime'),
+      figma.root.getPluginData('isCloseAtEnter')
+    )
   }
 
   setText(text: string): void {
@@ -71,11 +78,14 @@ class Controller {
     console.log('onSelectionChange', selections)
 
     const _selections: string[] = []
+
+    // 1つ以上選択しているとき
     if (selections.length > 0) {
+      // 選択した各要素のidを_selectionsに格納
+      // ついでにテキストの場合、フォントをロードする（テキストの変更に必要）
       _.map(selections, async selection => {
         _selections.push(selection.id)
 
-        // テキストの場合、フォントをロードする
         if (selection.type === 'TEXT') {
           const selectionRange = selection.characters.length
           for (let i = 0; i < selectionRange; i++) {
@@ -84,17 +94,8 @@ class Controller {
           console.log(`${selection.id} font loaded`)
         }
       })
-    }
-    figma.ui.postMessage({
-      type: 'selectionchange',
-      data: {
-        selections: _selections
-      }
-    } as PluginMessage)
 
-    // 一つ以上選択しているとき
-    if (selections.length > 0) {
-      // 一つだけ選択しているとき
+      // 1つだけ選択しているとき
       if (selections.length === 1) {
         // それがテキストのとき
         if (selections[0].type === 'TEXT') {
@@ -144,12 +145,49 @@ class Controller {
           } as PluginMessage)
         }
       }
-      // 一つ以上選択しているとき
+      // 2つ以上選択しているとき
       else {
+        // フラグを準備
+        let isAllTextType = true // 選択しているすべての要素がテキストか
+        let isAllSameCharacters = true // すべてのテキストが同じ文字か
+        let textNodeCount = 0 // テキストノードの数
+
+        // 各選択要素ごとに検証してフラグを更新
+        _.map(selections, async selection => {
+          if (selection.type === 'TEXT') {
+            textNodeCount++
+
+            if (
+              selections[0].type === 'TEXT' &&
+              selection.characters !== selections[0].characters
+            ) {
+              isAllSameCharacters = false
+            }
+          } else {
+            isAllTextType = false
+          }
+        })
+
+        // フラグに応じてUIに送るテキストを変える
+        // すべてテキストかつ同じ文字だったら、1つ目の要素の文字をそのまま送る（選択範囲込みで）
+        // 違ったら、空テキストを送る（UIはプレースホルダになる）
+        // textNodeCountが0（選択した要素のうちひとつもテキストがない）のときは
+        // isTextAreaDisabledオプションをtrueでUIに送る
+        let text = ''
+        let selectedTextRange: { start: number; end: number } | undefined = undefined
+        if (selections[0].type === 'TEXT' && isAllTextType && isAllSameCharacters) {
+          text = selections[0].characters
+          selectedTextRange = {
+            start: 0,
+            end: selections[0].characters.length
+          }
+        }
         figma.ui.postMessage({
           type: 'copytext',
           data: {
-            text: ''
+            text,
+            isTextAreaDisabled: textNodeCount === 0,
+            selectedTextRange
           }
         } as PluginMessage)
       }
@@ -165,6 +203,14 @@ class Controller {
         }
       } as PluginMessage)
     }
+
+    // _selectionsをUIに送る
+    figma.ui.postMessage({
+      type: 'selectionchange',
+      data: {
+        selections: _selections
+      }
+    } as PluginMessage)
   }
 }
 
@@ -185,7 +231,8 @@ function bootstrap(): void {
         break
       case 'setoptions':
         contoller.setOptions({
-          isEditRealtime: msg.data.isEditRealtime
+          isEditRealtime: msg.data.isEditRealtime,
+          isCloseAtEnter: msg.data.isCloseAtEnter
         })
         break
       case 'settext':

@@ -33,13 +33,13 @@ body {
 
 .textarea {
   position: relative;
-  flex: 1;
   display: flex;
+  flex: 1;
 }
 
 .textarea-content {
-  width: 100%;
   flex: 1;
+  width: 100%;
   padding: var(--spacing-text);
   font-size: var(--fontSize-textArea);
   line-height: var(--lineHeight-textArea);
@@ -101,6 +101,7 @@ body {
 .segmentedControl {
   position: relative;
   display: flex;
+  margin-right: -2px;
   border: 2px solid transparent;
 
   &:hover {

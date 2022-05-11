@@ -10,11 +10,13 @@ function Store() {
   })
   const [isTextAreaDisabled, setIsTextAreaDisabled] = useState<boolean>(true)
   const [isEditRealtime, setIsEditRealtime] = useState<boolean>(true)
+  const [isCloseAtEnter, setIsCloseAtEnter] = useState<boolean>(true)
   const [selections, setSelections] = useState<SceneNode[]>([])
 
   function updateOptions(options: Options): void {
     console.log('updateOptions', options)
     setIsEditRealtime(options.isEditRealtime)
+    setIsCloseAtEnter(options.isCloseAtEnter)
   }
 
   function sendTextToFigma(text: string): void {
@@ -41,7 +43,8 @@ function Store() {
       switch (messageType) {
         case 'getoptionssuccess':
           updateOptions({
-            isEditRealtime: pluginData.isEditRealtime
+            isEditRealtime: pluginData.isEditRealtime,
+            isCloseAtEnter: pluginData.isCloseAtEnter
           })
           break
         case 'selectionchange':
@@ -81,11 +84,13 @@ function Store() {
     inputTextSelectionRange,
     isTextAreaDisabled,
     isEditRealtime,
+    isCloseAtEnter,
     selections,
     setInputText,
     setInputTextSelectionRange,
     setIsTextAreaDisabled,
     setIsEditRealtime,
+    setIsCloseAtEnter,
     setSelections,
     sendTextToFigma
   }

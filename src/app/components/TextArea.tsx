@@ -2,12 +2,16 @@ import _ from 'lodash'
 import React, { useEffect, useRef } from 'react'
 import Store from '@/app/Store'
 
+const ONCHANGE_TIMER_DURATION = 100
+const SELECTION_TIMER_DURATION = 500
+
 const TextArea: React.FC = () => {
   const {
     inputText,
     inputTextSelectionRange,
     isTextAreaDisabled,
     isEditRealtime,
+    isCloseAtEnter,
     selections,
     setInputText,
     sendTextToFigma
@@ -18,9 +22,8 @@ const TextArea: React.FC = () => {
   const selectionRangeTimer = useRef(0)
   const inputTextRef = useRef(inputText)
   const isEditRealtimeRef = useRef(isEditRealtime)
+  const isCloseAtEnterRef = useRef(isCloseAtEnter)
   const isTextAreaDisabledRef = useRef(isTextAreaDisabled)
-  const ONCHANGE_TIMER_DURATION = 100
-  const SELECTION_TIMER_DURATION = 500
 
   function onChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     console.log('textarea onChange', 'isEditRealtime:', isEditRealtime)
@@ -48,7 +51,7 @@ const TextArea: React.FC = () => {
   function onSelectionChange(): void {
     window.clearTimeout(selectionTimer.current)
     selectionTimer.current = window.setTimeout(() => {
-      if (selections.length > 0 && inputText.length > 0) {
+      if (selections.length > 0) {
         focusToTextArea()
       }
     }, SELECTION_TIMER_DURATION)
@@ -102,13 +105,20 @@ const TextArea: React.FC = () => {
         sendTextToFigma(inputTextRef.current)
       }
 
-      closePlugin()
+      // isCloseAtEnterがtrueのときだけ閉じる
+      if (isCloseAtEnterRef.current) {
+        closePlugin()
+      }
     }
   }
 
   function onReturnClick(): void {
     sendTextToFigma(inputText)
-    closePlugin()
+
+    // isCloseAtEnterがtrueのときだけ閉じる
+    if (isCloseAtEnterRef.current) {
+      closePlugin()
+    }
   }
 
   useEffect(() => {
@@ -121,9 +131,10 @@ const TextArea: React.FC = () => {
   }, [inputText])
 
   useEffect(() => {
+    console.log('setting update', isEditRealtime, isCloseAtEnter)
     isEditRealtimeRef.current = isEditRealtime
-    console.log('isEditRealtime update', isEditRealtime)
-  }, [isEditRealtime])
+    isCloseAtEnterRef.current = isCloseAtEnter
+  }, [isEditRealtime, isCloseAtEnter])
 
   useEffect(() => {
     isTextAreaDisabledRef.current = isTextAreaDisabled
